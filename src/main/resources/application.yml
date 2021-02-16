@@ -1,0 +1,24 @@
+spring:
+  mvc:
+    static-path-pattern: /static/**
+    async:
+      request-timeout: 86400000 # 24 hours: 86400000
+  resources:
+    static-locations: classpath:/static/
+    add-mappings: true
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+  thymeleaf:
+    prefix: classpath:templates/
+    check-template-location: true
+    suffix: .html
+    mode: HTML
+    cache: false
+    order: 1
+
+server:
+  address: 0.0.0.0
+  port: 3080

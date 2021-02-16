@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+
+    <Appenders>
+
+        <RollingRandomAccessFile name="FILE_OUT"
+                                 fileName="./log/out.log"
+                                 filePattern="/log/old/out-%d{yyyy-MM-dd}{GMT+9}-%i.log.gz">
+            <PatternLayout pattern="%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I} | %d{ISO8601}{GMT+9} | %logger{5.} | %thread | %highlight{%msg%n%throwable}{TRACE=cyan bright, DEBUG=cyan bright, INFO=white bright, WARN=red bright, ERROR=red bright, FATAL=red blink}" disableAnsi="false"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="FILE_ERR"
+                                 fileName="./log/err.log"
+                                 filePattern="/log/old/err-%d{yyyy-MM-dd}{GMT+9}-%i.log.gz">
+            <PatternLayout pattern="%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I} | %d{ISO8601}{GMT+9} | %logger{5.} | %thread | %highlight{%msg%n%throwable}{TRACE=cyan bright, DEBUG=cyan bright, INFO=white bright, WARN=red bright, ERROR=red bright, FATAL=red blink}" disableAnsi="false"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="250 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="100"/>
+        </RollingRandomAccessFile>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%level{WARN=W, DEBUG=D, ERROR=E, TRACE=T, INFO=I} | %d{ISO8601}{GMT+9} | %logger{5.} | %thread | %highlight{%msg%n%throwable}{TRACE=cyan bright, DEBUG=cyan bright, INFO=white bright, WARN=red bright, ERROR=red bright, FATAL=red blink}" disableAnsi="false"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef level="INFO" ref="STDOUT" />
+            <AppenderRef level="ERROR" ref="STDOUT" />
+            <AppenderRef level="ALL" ref="FILE_OUT"/>
+            <AppenderRef level="ERROR" ref="FILE_ERR"/>
+        </Root>
+    </Loggers>
+
+</Configuration>
