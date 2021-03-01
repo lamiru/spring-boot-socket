@@ -3,32 +3,23 @@ package com.intellithinx.socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static com.intellithinx.socket.SocketServerTest.timeDelay;
 
-public class SocketServerTest {
-    private static Logger log = LoggerFactory.getLogger(SocketServerTest.class);
-    private static ServerSocket server;
-    private static int port = 9876;
+class SocketThread extends Thread {
+    private static Logger log = LoggerFactory.getLogger(SocketThread.class);
+    public static Socket socket;
 
-    public static void timeDelay(long t) {
-        try {
-            java.lang.Thread.sleep(t);
-        } catch (InterruptedException e) {
-            e.getStackTrace();
-            log.error(e.toString());
-        }
+    public SocketThread(Socket socket) {
+        this.socket = socket;
     }
 
-    public static void main(String[] args) {
+    public void run() {
         try {
-            server = new ServerSocket(port);
-            Socket socket = server.accept();
             OutputStream socketOutputStream = socket.getOutputStream();
             InputStream socketInputStream = socket.getInputStream();
             while (true) {
@@ -48,10 +39,44 @@ public class SocketServerTest {
             }
             socketOutputStream.close();
             socketInputStream.close();
-            server.close();
         } catch (Exception e) {
             e.getStackTrace();
             log.error(e.toString());
+        }
+    }
+}
+
+public class SocketServerTest {
+    private static Logger log = LoggerFactory.getLogger(SocketServerTest.class);
+    private static ServerSocket server;
+    private static int port = 9876;
+
+    public static void timeDelay(long t) {
+        try {
+            java.lang.Thread.sleep(t);
+        } catch (InterruptedException e) {
+            e.getStackTrace();
+            log.error(e.toString());
+        }
+    }
+
+    public static void main(String args[]) {
+        ServerSocket serverSocket = null;
+        Socket socket = null;
+
+        try {
+            serverSocket = new ServerSocket(port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        while (true) {
+            try {
+                socket = serverSocket.accept();
+            } catch (Exception e) {
+                e.getStackTrace();
+                log.error(e.toString());
+            }
+            new SocketThread(socket).start();
         }
     }
 }

@@ -50,6 +50,8 @@ public class HeartBeat {
             socketOutputStream.close();
             socketInputStream.close();
             socket.close();
+            String isClosed = socket.isClosed() ? "Closed" : "Connected";
+            log.info(isClosed);
         } catch (Exception e) {
             e.getStackTrace();
             log.error(e.toString());
