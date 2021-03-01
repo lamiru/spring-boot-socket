@@ -26,34 +26,32 @@ public class SocketServerTest {
     }
 
     public static void main(String[] args) {
-        while (true) {
-            try {
-                server = new ServerSocket(port);
-                Socket socket = server.accept();
-                OutputStream socketOutputStream = socket.getOutputStream();
-                InputStream socketInputStream = socket.getInputStream();
-
+        try {
+            server = new ServerSocket(port);
+            Socket socket = server.accept();
+            OutputStream socketOutputStream = socket.getOutputStream();
+            InputStream socketInputStream = socket.getInputStream();
+            while (true) {
                 byte[] receivedByte = new byte[100];
                 int readSize = socketInputStream.read(receivedByte);
                 String receivedString = new String(receivedByte, StandardCharsets.UTF_8).trim();
                 if (readSize > 0) {
                     log.info("Socket message is received: " + receivedString);
+                    String message = "<{\"block\":\"3AL\",\"truck\":\"OK\"}>";
+                    OutputStreamWriter osw = new OutputStreamWriter(socketOutputStream, StandardCharsets.UTF_8);
+                    osw.write(message, 0, message.length());
+                    osw.flush();
+                    log.info("Socket message is sent: " + message);
+                    timeDelay(100);
                 }
-
-                String message = "<{\"block\":\"3AL\",\"truck\":\"OK\"}>";
-                OutputStreamWriter osw = new OutputStreamWriter(socketOutputStream, StandardCharsets.UTF_8);
-                osw.write(message, 0, message.length());
-                osw.flush();
-                log.info("Socket message is sent: " + message);
-                timeDelay(1000);
-                server.close();
-
                 if (receivedString.contains("12341234")) break;
-            } catch (Exception e) {
-                e.getStackTrace();
-                log.error(e.toString());
-                timeDelay(1000);
             }
+            socketOutputStream.close();
+            socketInputStream.close();
+            server.close();
+        } catch (Exception e) {
+            e.getStackTrace();
+            log.error(e.toString());
         }
     }
 }
