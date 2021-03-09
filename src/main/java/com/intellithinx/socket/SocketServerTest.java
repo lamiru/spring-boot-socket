@@ -48,7 +48,6 @@ class SocketThread extends Thread {
 
 public class SocketServerTest {
     private static Logger log = LoggerFactory.getLogger(SocketServerTest.class);
-    private static ServerSocket server;
     private static int port = 9876;
 
     public static void timeDelay(long t) {
